@@ -1,4 +1,3 @@
-from email.policy import default
 from rest_framework import serializers, permissions
 from rest_framework.decorators import action, api_view, permission_classes
 from django.core import exceptions as django_exceptions
