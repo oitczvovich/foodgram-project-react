@@ -1,8 +1,5 @@
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import (
-    EmailValidator,
-    RegexValidator,
-)
+from django.core.validators import EmailValidator, RegexValidator
 from django.db import models
 
 
@@ -28,7 +25,6 @@ class User(AbstractUser):
     first_name = models.TextField('Имя', max_length=150, blank=False)
     last_name = models.TextField('Фамилия', max_length=150, blank=False)
     password = models.CharField('Пароль', max_length=150, blank=False)
-
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'last_name', 'first_name']
 
@@ -43,6 +39,9 @@ class User(AbstractUser):
                 name='unique_username_email',
             ),
         ]
+
+    def __str__(self):
+        return self.username
 
 
 class Follow(models.Model):

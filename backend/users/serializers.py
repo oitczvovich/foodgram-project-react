@@ -1,13 +1,12 @@
-from rest_framework import serializers, permissions
-from rest_framework.decorators import action, api_view, permission_classes
-from django.core import exceptions as django_exceptions
-from django.contrib.auth.password_validation import validate_password
+from django.shortcuts import get_object_or_404
+from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
-from .models import User, Follow
+from .models import Follow, User
 
 
 class UserSerializer(serializers.ModelSerializer):
+    """Сериалайзер для модели пользователь."""
     password = serializers.CharField(
         style={"write_only": "password"},
         write_only=True
@@ -25,7 +24,7 @@ class UserSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'password',
-            'is_subscribed'
+            'is_subscribed',
         ]
 
     def create(self, validated_data):
@@ -50,6 +49,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class FollowSerializer(serializers.ModelSerializer):
+    """Сериалайзер для модели подписки."""
     user = serializers.SlugRelatedField(
         slug_field='username',
         default=serializers.CurrentUserDefault(),
