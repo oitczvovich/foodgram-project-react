@@ -45,6 +45,7 @@ class User(AbstractUser):
 
 
 class Follow(models.Model):
+    """ Модель подписка на автора."""
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -66,7 +67,7 @@ class Follow(models.Model):
                 fields=['user', 'following'], name="unique_followers"
             )
         ]
-    ordering = ["-created"]
+        ordering = ["-id"]
 
     def __str__(self):
         return self.following.username
