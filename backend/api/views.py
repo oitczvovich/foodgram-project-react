@@ -126,7 +126,7 @@ class RecipeViewSet(ModelViewSet):
         user = request.user
         file_name = 'shopping_list.txt'
         ingredients = IngredientsRecipe.objects.filter(
-            recipe__cart_recipe__user=user
+            recipe__cart_recipes__user=user
         ).values(
             'ingredient__name', 'ingredient__measurement_unit'
         ).annotate(
