@@ -46,7 +46,7 @@ def add_or_del_obj(self, **kwargs):
         recipe=recipe
     )
     if request.method == 'POST':
-        if obj_in_table.exists() is False:
+        if not obj_in_table.exists():
             model.objects.create(
                 user=self.request.user,
                 recipe=recipe

@@ -1,4 +1,3 @@
-
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
@@ -8,7 +7,6 @@ from recipes.models import (
     Recipe, ShoppingCartRecipe, Tag
     )
 from users.models import Follow, User
-
 from .fields import Base64ImageField
 
 
@@ -239,7 +237,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         ingredients_data = validated_data.pop('ingredients')
         tags_data = validated_data.pop('tags')
         recipe = Recipe.objects.create(**validated_data)
-        recipe.tags.set(tags_data)  # set убирает все уникальные значение нет необходимости проверять на дубли.
+        recipe.tags.set(tags_data)
         self.create_ingredients(ingredients_data, recipe)
         recipe.save()
         return recipe

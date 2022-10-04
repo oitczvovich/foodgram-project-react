@@ -45,7 +45,7 @@ class User(AbstractUser):
 
 
 class Follow(models.Model):
-    """ Модель подписка на автора."""
+    """ Модель подписка на"""
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
