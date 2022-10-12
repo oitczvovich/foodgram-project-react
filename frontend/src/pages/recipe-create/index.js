@@ -89,18 +89,9 @@ const RecipeCreate = ({ onEdit }) => {
             history.push(`/recipes/${res.id}`)
           })
           .catch(err => {
-            const { non_field_errors, ingredients, cooking_time } = err
+            const { non_field_errors } = err
             if (non_field_errors) {
-              return alert(non_field_errors.join(', '))
-            }
-            if (ingredients) {
-              return alert(`Ингредиенты: ${ingredients.filter(item => Object.keys(item).length).map(item => {
-                const error = item[Object.keys(item)[0]]
-                return error && error.join(' ,')
-              })[0]}`)
-            }
-            if (cooking_time) {
-              return alert(`Время готовки: ${cooking_time[0]}`)
+              alert(non_field_errors.join(', '))
             }
             const errors = Object.values(err)
             if (errors) {

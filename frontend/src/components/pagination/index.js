@@ -3,18 +3,14 @@ import cn from 'classnames'
 import { LinkComponent, Icons } from '../index'
 import arrowLeft from './arrow-left.png'
 import arrowRight from './arrow-right.png'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
-const Pagination = ({ count = 0, limit = 6, initialActive = 1, onPageChange, page }) => {
+const Pagination = ({ count = 0, limit = 6, initialActive = 1, onPageChange }) => {
   const [ active, setActive ] = useState(initialActive)
   const onButtonClick = (active) => {
     setActive(active)
     onPageChange(active)
   }
-  useEffect(_ => {
-    if (page === active) { return }
-    setActive(page)
-  }, [page])
   const pagesCount = Math.ceil(count / limit)
   if (count === 0 || pagesCount <= 1) { return null }
   return <div className={styles.pagination}>

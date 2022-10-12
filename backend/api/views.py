@@ -1,36 +1,43 @@
 from django.db.models import Sum
 from django.http import HttpResponse
-from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
-from rest_framework import filters, permissions
+from rest_framework import permissions
 from rest_framework.decorators import action, permission_classes
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
-
-from recipes.filters import RecipeFilter
+from django_filters.rest_framework import DjangoFilterBackend
+from recipes.filters import RecipeFilter, IngredientSearchFilter
 from recipes.models import (
     FavoriteRecipe, Ingredient, IngredientsRecipe,
     Recipe, ShoppingCartRecipe, Tag
     )
-from recipes.permissions import IsAdminOrAuthor
+from recipes.permissions import (
+    IsAdminOrReadOnly,
+    IsOwnerOrReadOnly
+    )
 from users.models import Follow, User
 from .serializers import (
-    IngredientSerializer, RecipeListSerializer,
+    IngredientSerializer,
     RecipeSerializer, ShortRecipeSerialazer,
     SubscribeSerializer, TagSerializer, UserSerializer
     )
 from .utils import add_or_del_author, add_or_del_obj
+from .pagination import LimitPageNumberPagination
 
 
 class UserViewSet(UserViewSet):
     """ Вьюсет модели User."""
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    pagination_class = LimitPageNumberPagination
 
-    @action(methods=['GET'], detail=False)
+    @action(
+        methods=['GET'],
+        detail=False,
+         )
     @permission_classes([permissions.IsAuthenticated])
     def subscriptions(self, request):
         """Показывает подписчиков."""
-        user = request.user.id
+        user = request.user
         queryset = User.objects.filter(following__user=user)
         pages = self.paginate_queryset(queryset)
         serializer = SubscribeSerializer(
@@ -41,7 +48,7 @@ class UserViewSet(UserViewSet):
         return self.get_paginated_response(serializer.data)
 
     @action(
-        methods=['POST', 'DELETE'],
+        methods=['GET', 'DELETE'],
         detail=True,
         )
     @permission_classes([permissions.IsAuthenticated])
@@ -61,34 +68,36 @@ class TagViewSet(ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     pagination_class = None
+    permission_classes = (IsAdminOrReadOnly,)
 
 
 class IngredientViewSet(ReadOnlyModelViewSet):
     """ Возвращает список всех ингредиентов из БД."""
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('name',)
+    filter_backends = (IngredientSearchFilter,)
+    permission_classes = (IsAdminOrReadOnly,)
+    pagination_class = None
+    search_fields = ('^name',)
 
 
 class RecipeViewSet(ModelViewSet):
     """ Вьюсет модели Recipe."""
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
-    permission_classes = (IsAdminOrAuthor,)
+    filterset_class = (RecipeFilter)
+    pagination_class = LimitPageNumberPagination
+    permission_classes = (IsOwnerOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
-    filterset_class = RecipeFilter
-    pagination_class = None
 
-    def get_serializer_class(self):
-        if self.action in ('retrieve', 'list'):
-            return RecipeListSerializer
-        return RecipeSerializer
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
     @action(
         detail=True,
-        methods=['POST', 'DELETE'],
+        methods=['GET', 'DELETE'],
         url_path='favorite',
+        url_name='favorite',
         permission_classes=(permissions.IsAuthenticated,),
         )
     def favorite(self, request, pk=None):
@@ -103,8 +112,10 @@ class RecipeViewSet(ModelViewSet):
 
     @action(
         detail=True,
-        methods=['POST', 'DELETE'],
+        methods=['GET', 'DELETE'],
         permission_classes=(permissions.IsAuthenticated,),
+        url_name='shopping_cart',
+        url_path='shopping_cart'
         )
     def shopping_cart(self, request, pk=None):
         """ Добавление/удаления рецепта в/из корзины."""
@@ -117,6 +128,7 @@ class RecipeViewSet(ModelViewSet):
         )
 
     @action(
+        methods=['GET'],
         detail=False,
         url_path='download_shopping_cart',
         permission_classes=(permissions.IsAuthenticated,),

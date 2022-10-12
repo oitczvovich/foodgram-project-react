@@ -22,8 +22,8 @@ class User(AbstractUser):
         unique=True,
         validators=[EmailValidator],
     )
-    first_name = models.TextField('Имя', max_length=150, blank=False)
-    last_name = models.TextField('Фамилия', max_length=150, blank=False)
+    first_name = models.CharField('Имя', max_length=150, blank=False)
+    last_name = models.CharField('Фамилия', max_length=150, blank=False)
     password = models.CharField('Пароль', max_length=150, blank=False)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'last_name', 'first_name']

@@ -6,7 +6,7 @@ from users.models import User
 
 
 def add_or_del_author(self, **kwargs):
-    """Добавить или удалить от автора."""
+    """Добавить или удалить автора."""
     request = kwargs['request']
     model = kwargs['model']
     serializer_type = kwargs['serializer']
@@ -36,7 +36,7 @@ def add_or_del_author(self, **kwargs):
 
 
 def add_or_del_obj(self, **kwargs):
-    """Добавить или удалить от рецепт в переданной таблице."""
+    """Добавить или удалить рецепт в переданной таблице."""
     recipe = self.get_object()
     model = kwargs['model']
     request = kwargs['request']
@@ -45,7 +45,7 @@ def add_or_del_obj(self, **kwargs):
         user=self.request.user,
         recipe=recipe
     )
-    if request.method == 'POST':
+    if request.method == 'GET':
         if not obj_in_table.exists():
             model.objects.create(
                 user=self.request.user,

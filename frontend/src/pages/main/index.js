@@ -20,7 +20,7 @@ const HomePage = ({ updateOrders }) => {
     handleAddToCart
   } = useRecipes()
 
-
+  
   const getRecipes = ({ page = 1, tags }) => {
     api
       .getRecipes({ page, tags })
@@ -54,10 +54,7 @@ const HomePage = ({ updateOrders }) => {
         <Title title='Рецепты' />
         <CheckboxGroup
           values={tagsValue}
-          handleChange={value => {
-            setRecipesPage(1)
-            handleTagsChange(value)
-          }}
+          handleChange={handleTagsChange}
         />
       </div>
       <CardList>
@@ -72,7 +69,6 @@ const HomePage = ({ updateOrders }) => {
       <Pagination
         count={recipesCount}
         limit={6}
-        page={recipesPage}
         onPageChange={page => setRecipesPage(page)}
       />
     </Container>
