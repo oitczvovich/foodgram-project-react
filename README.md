@@ -12,21 +12,63 @@
 🔹 Gunicorn<br>
 🔹 Docker<br>
 
+## Подготовка и запуск проекта
 
-## Как запустить проект:
+- Выполните вход на свой удаленный сервер:
+```
+ssh username@ip
+```
+- Установите docker и docker-compose на сервер:
+```
+sudo apt install docker.io 
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
 
-Клонировать репозиторий и перейти в него в командной строке:
+```
 
-`https://github.com/oitczvovich/foodgram-project-react`
+- Клонируйте репозиторий командой:
+```
+git clone https://github.com/oitczvovich/foodgram-project-react
+``` 
+- Перейдите в каталог командой:
+```
+cd foodgram-project-react/infra
+```
+- Создаем файл .env с переменными окружения:
+```
+SECRET_KEY='<ключ>'
+DB_ENGINE=django.db.backends.postgresql
+DB_NAME=<имя_БД>
+POSTGRES_USER=<имя_пользователя>
+POSTGRES_PASSWORD=<пароль>
+DB_HOST=db  # в случаи езменения необходимо исправить файл docker-compose.yml 
+DB_PORT=5432  # в случаи езменения необходимо исправить файл docker-compose.yml 
+```
+- Выполните команду для запуска контейнера:
+```
+sudo docker-compose up -d --build
+``` 
+- Выполнить миграции и подключить статику
+```
+sudo docker-compose exec backend python manage.py makemigrations
+sudo docker-compose exec backend python manage.py migrate
+sudo docker-compose exec backend python manage.py collectstatic --noinput
+``` 
+- Создадим суперпользователя:
+```
+sudo docker-compose exec backend python manage.py createsuperuser
+``` 
+### Проект
+Работает по адресу http://158.160.4.219/
+superuser : super@mail.ru
+username: SuperUser
+password: super342rf364g4645
 
-`cd foodgram-project-react`
+### Документация
+http://158.160.4.219/api/docs/
 
-Установить Docker и Docker Compose (нативная ОС для Docker — Linux, поэтому запуск Docker-контейнеров должен происходить внутри виртуальной машины с ОС Linux):
 
-`sudo apt install docker-ce docker-compose -y`
-
-Для работы с базой данных создать файл .env c переменными окружения. В директории backend/ проекта расположен файл .env, в котором описаны примеры переменных и их значений.
-
-Запуск контейнера:
-
-`docker-compose up -d`
+## Авторы проекта
+### Скалацкий Владимир
+e-mail: skalakcii@yandex.ru<br>
+https://github.com/oitczvovi
