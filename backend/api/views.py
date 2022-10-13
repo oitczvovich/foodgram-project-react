@@ -48,7 +48,7 @@ class UserViewSet(UserViewSet):
         return self.get_paginated_response(serializer.data)
 
     @action(
-        methods=['GET', 'DELETE'],
+        methods=['POST', 'DELETE'],
         detail=True,
         )
     @permission_classes([permissions.IsAuthenticated])
@@ -95,7 +95,7 @@ class RecipeViewSet(ModelViewSet):
 
     @action(
         detail=True,
-        methods=['GET', 'DELETE'],
+        methods=['POST', 'DELETE'],
         url_path='favorite',
         url_name='favorite',
         permission_classes=(permissions.IsAuthenticated,),
@@ -112,7 +112,7 @@ class RecipeViewSet(ModelViewSet):
 
     @action(
         detail=True,
-        methods=['GET', 'DELETE'],
+        methods=['POST', 'DELETE'],
         permission_classes=(permissions.IsAuthenticated,),
         url_name='shopping_cart',
         url_path='shopping_cart'
