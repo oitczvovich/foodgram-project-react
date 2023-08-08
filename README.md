@@ -64,8 +64,6 @@ superuser : super@mail.ru
 username: SuperUser
 password: super342rf364g4645
 
-### Документация
-http://158.160.4.219/api/docs/
 
 
 ## Авторы проекта
